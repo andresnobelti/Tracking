@@ -1,0 +1,53 @@
+--Procedure creado para encritpar pass
+
+CREATE PROCEDURE SP_RegistrarUsuario 
+	 @USERNAME VARCHAR(250)
+    ,@EMAIL  VARCHAR(250) 
+    ,@PASSWORD VARCHAR(MAX)
+    ,@DATE date
+	,@ID_ROL_FK int
+AS
+BEGIN
+	SET NOCOUNT ON 
+
+    INSERT INTO [USER]
+           (USERNAME
+           ,EMAIL
+           ,PASSWORD
+           ,DATE
+           ,ID_ROL_FK)
+    VALUES (
+        @USERNAME
+		,@EMAIL
+        ,ENCRYPTBYPASSPHRASE('ENCRIPTAR', @PASSWORD)
+        ,@DATE
+        ,@ID_ROL_FK
+        )
+END
+
+GO
+----------
+--Ingresar datos con procedure creado (Encriptar pass)
+
+exec [dbo].[SP_RegistrarUsuario] 
+	 @USERNAME ='testProcedure'
+    ,@EMAIL = 'testProcedure@gmail.com'
+    ,@PASSWORD = 'ContraseñaEncriptada'
+    ,@DATE = '2021-03-25'
+	,@ID_ROL_FK = 1
+
+----
+
+--Llama todos los usuarios con contraseña desencriptada
+SELECT A.USERNAME, CONVERT(VARCHAR(MAX),DECRYPTBYPASSPHRASE('ENCRIPTAR',A.PASSWORD))AS PASSWORD    
+FROM [USER] A  
+
+--Llama usuario especifico 
+
+SELECT A.USERNAME, CONVERT(VARCHAR(MAX),DECRYPTBYPASSPHRASE('ENCRIPTAR',A.PASSWORD))AS PASSWORD,  
+						B.TIPO, A.EMAIL    
+						FROM [USER] A, ROL B     
+						where A.USERNAME= 'testUser' 
+						AND CONVERT(VARCHAR(MAX),DECRYPTBYPASSPHRASE('ENCRIPTAR',A.PASSWORD))='testPass' 
+						AND A.ID_ROL_FK=b.ID_ROL
+
