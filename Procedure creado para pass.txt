@@ -30,9 +30,9 @@ GO
 --Ingresar datos con procedure creado (Encriptar pass)
 
 exec [dbo].[SP_RegistrarUsuario] 
-	 @USERNAME ='testProcedure'
+	 @USERNAME ='testUser'
     ,@EMAIL = 'testProcedure@gmail.com'
-    ,@PASSWORD = 'ContraseñaEncriptada'
+    ,@PASSWORD = 'testPass'
     ,@DATE = '2021-03-25'
 	,@ID_ROL_FK = 1
 
